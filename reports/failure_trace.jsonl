@@ -1,0 +1,3 @@
+{"ts": "2026-10-24T09:00:00Z", "event": "step_started", "step": 7, "sandbox_name": "sbx-eval0007"}
+{"ts": "2026-10-24T09:00:03Z", "event": "step_failed", "step": 7, "sandbox_name": "sbx-eval0007"}
+{"ts": "2026-10-24T09:00:04Z", "event": "policy_applied", "policy": "resume", "step": 7, "sandbox_name": "sbx-eval0007"}

