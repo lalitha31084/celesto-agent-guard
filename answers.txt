@@ -1,0 +1,19 @@
+1) Why did you resume, roll back, or start fresh when step 7 of 10 failed, and what did that cost?
+
+We chose resume because steps 1-6 had already produced valid artifacts and state that needed to be preserved. Resuming the same sandbox kept the filesystem intact, avoided re-provisioning the VM, and saved both boot time and cost. Rollback would have required a snapshot taken before step 7 and carried the risk of discarding intermediate valid work, while a fresh start would have been simplest but most expensive in time and cost and would have lost all progress from the first 6 steps. The trade-off was added recovery complexity. We track this explicitly in reports/failure_trace.jsonl with a policy_applied event to keep it auditable.
+
+2) Which two Celesto capabilities did you depend on, and what fails if you only have a stateless shell?
+
+We depended on safety_hooks and network_policy. Safety hooks enforce deterministic, pre-execution blocking of dangerous commands before they ever reach the guest. Network policy restricts outbound traffic via an allow-list to prevent exfiltration. With only a stateless shell, there is no pre-command enforcement (prompt injection can be obeyed), no persistent egress control (an agent can curl/wget sensitive data out), and no reliable audit trail of blocked attempts. This turns a contained block into an unlogged incident.
+
+3) How did your containment test stop the attack, and which mount, credential, or network choice was weakest?
+
+Our test fed a prompt_injection_exfil attempt trying to curl to an external host. Safety hooks inspected the command before execution and blocked it (recorded as decision: block in logs/commands.jsonl). Network policy enforced an allow-list, further constraining egress even if a command slipped through. The weakest choice was credentials/env injection. If real, long-lived API keys were injected into a sandbox browsing untrusted content, they would be the highest value target. To mitigate this, we only used placeholders, avoided committing secrets, and treated any credential injection as an explicit trust decision. Evidence is in reports/containment.json and reports/evidence/containment.log (blocked: true, host_untouched: true).
+
+4) How did you define success on the 20 fresh runs, and how did you separate setup failures from product failures?
+
+Success was defined as a fresh sandbox completing the core task end-to-end with its expected proof output and a valid run recorded against execution_target: celesto_sandbox. We separated failures by stage: setup failures were issues creating/booting the sandbox (e.g. provider/SDK errors or boot timeouts), identified by lack of a ready state or abnormal boot_to_ready_s/creation errors; product failures were cases where the sandbox reached ready but the agent/tool logic failed mid-task, recorded as success: false on that fresh sandbox with full telemetry preserved for post-mortem in reports/postmortem.md. All 20 runs used unique sbx-eval* names, every row was retained, and summary statistics were recomputed directly from those rows.
+
+5) What broke or held with five uniquely named sandboxes, and what would you change before a much larger fan-out?
+
+All five uniquely named sandboxes ran concurrently with no name collisions or observed shared state issues (see reports/concurrency.json). Cleanup paths remained intact. Concurrency was limited by the free trial's single-retained-sandbox allowance, so we designed around uniqueness and isolation. Before larger fan-out, I'd add orchestration with a job queue, concurrency caps and backpressure; enforce per-job budgets and idle-timeout auto-cleanup; improve resiliency with retry/idempotency, orphan detection/reaping, and clearer control plane/execution plane separation; and harden scale safety with strong name generation, per-tenant quotas, and tests for cross-job interference with shared services (API/ledger).

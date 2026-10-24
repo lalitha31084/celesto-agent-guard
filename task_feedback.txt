@@ -1,0 +1,7 @@
+This task was very well-aligned with my career goals of building secure, production-ready AI agents. The difficulty felt just right for a hackathon-style challenge - hard enough to force deep thinking, but not so abstract that it was impossible to implement. 
+
+I learned a lot about microVM-based sandboxing, especially the difference between process isolation, containers, and Firecracker-style microVMs. Understanding how to combine safety_hooks with network_policy to enforce deterministic containment was a key takeaway. I also learned the importance of treating every command as auditable, designing explicit recovery paths for mid-task failures, and measuring reliability with fresh runs rather than just a single successful execution. 
+
+Separating setup failures from product failures while running 20 fresh runs taught me how to build an honest eval harness. The containment test was especially valuable as it shifted my mindset from "prompt the agent to be safe" to "enforce safety at the execution boundary". 
+
+This task helped me unlock new skills in sandbox lifecycle management, adversarial testing, agent evaluation, and failure recovery design. The strict file-contract tests were challenging but realistic, closely mirroring what real backend/infrastructure evaluations look like. Overall, this was one of the most practical, hands-on tasks I have done and gave me skills I can directly apply to building safer agent systems in production.
